@@ -47,14 +47,14 @@ public class QuizActivity extends AppCompatActivity {
         trueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
+                checkAnswer(true);
             }
         });
 
         falseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+                checkAnswer(false);
             }
         });
     }
@@ -62,5 +62,14 @@ public class QuizActivity extends AppCompatActivity {
     private void nextQuestion() {
         int question = questionBank[currentIndex].getTextResID();
         questionTextView.setText(question);
+    }
+
+    private void checkAnswer(boolean userPressedTrue) {
+        if (userPressedTrue && questionBank[currentIndex].isAnswerTrue()
+                || !userPressedTrue && !questionBank[currentIndex].isAnswerTrue()) {
+            Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+        }
     }
 }
