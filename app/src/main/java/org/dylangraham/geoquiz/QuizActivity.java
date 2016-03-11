@@ -93,6 +93,8 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void nextQuestion() {
+        Log.d(TAG, "Updating question text for question #" + currentIndex, new Exception());
+
         int question = questionBank[currentIndex].getTextResID();
         questionTextView.setText(question);
     }
