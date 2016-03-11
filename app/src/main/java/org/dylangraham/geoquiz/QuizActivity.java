@@ -1,5 +1,6 @@
 package org.dylangraham.geoquiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,10 +14,6 @@ public class QuizActivity extends AppCompatActivity {
     private static final String TAG = QuizActivity.class.getCanonicalName();
     private static final String KEY_INDEX = "index";
 
-    private Button trueButton;
-    private Button falseButton;
-    private Button nextButton;
-    private Button prevButton;
     private TextView questionTextView;
     private int currentIndex = 0;
 
@@ -38,11 +35,11 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         questionTextView = (TextView) findViewById(R.id.question_text_view);
-
-        nextButton = (Button) findViewById(R.id.next_button);
-        prevButton = (Button) findViewById(R.id.prev_button);
-        trueButton = (Button) findViewById(R.id.true_button);
-        falseButton = (Button) findViewById(R.id.false_button);
+        Button nextButton = (Button) findViewById(R.id.next_button);
+        Button cheatButton = (Button) findViewById(R.id.cheat_button);
+        Button prevButton = (Button) findViewById(R.id.prev_button);
+        Button trueButton = (Button) findViewById(R.id.true_button);
+        Button falseButton = (Button) findViewById(R.id.false_button);
 
         nextQuestion();
 
@@ -59,6 +56,14 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 currentIndex = (currentIndex + 1) % questionBank.length;
                 nextQuestion();
+            }
+        });
+
+        cheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(QuizActivity.this, CheatActivity.class);
+                startActivity(i);
             }
         });
 
