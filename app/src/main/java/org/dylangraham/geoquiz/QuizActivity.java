@@ -2,6 +2,7 @@ package org.dylangraham.geoquiz;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = QuizActivity.class.getCanonicalName();
+    private static final String KEY_INDEX = "index";
 
     private Button trueButton;
     private Button falseButton;
@@ -30,6 +32,10 @@ public class QuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+
+        if (savedInstanceState != null) {
+            currentIndex = savedInstanceState.getInt(KEY_INDEX);
+        }
 
         questionTextView = (TextView) findViewById(R.id.question_text_view);
 
@@ -77,6 +83,13 @@ public class QuizActivity extends AppCompatActivity {
                 checkAnswer(false);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.i(TAG, "onSaveInstanceState");
+        outState.putInt(KEY_INDEX, currentIndex);
     }
 
     private void nextQuestion() {
