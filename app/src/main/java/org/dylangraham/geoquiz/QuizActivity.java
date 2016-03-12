@@ -13,9 +13,11 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = QuizActivity.class.getCanonicalName();
     private static final String KEY_INDEX = "index";
+    private static final int REQUEST_CODE_CHEAT = 0;
 
     private TextView questionTextView;
     private int currentIndex = 0;
+    private boolean isCheater;
 
     private Question[] questionBank = new Question[] {
             new Question(R.string.question_oceans, true),
@@ -55,6 +57,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 currentIndex = (currentIndex + 1) % questionBank.length;
+                isCheater = false;
                 nextQuestion();
             }
         });
@@ -64,7 +67,7 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 boolean answerIsTrue = questionBank[currentIndex].isAnswerTrue();
                 Intent i = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
-                startActivity(i);
+                startActivityForResult(i, REQUEST_CODE_CHEAT);
             }
         });
 
@@ -92,6 +95,21 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return;
+            }
+            isCheater = CheatActivity.wasAnswerShown(data);
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.i(TAG, "onSaveInstanceState");
@@ -104,11 +122,19 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue) {
-        if (userPressedTrue && questionBank[currentIndex].isAnswerTrue()
-                || !userPressedTrue && !questionBank[currentIndex].isAnswerTrue()) {
-            Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
+        int messageResID;
+
+        if (isCheater) {
+            messageResID = R.string.judgment_toast;
         } else {
-            Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+            if (userPressedTrue && questionBank[currentIndex].isAnswerTrue()
+                    || !userPressedTrue && !questionBank[currentIndex].isAnswerTrue()) {
+                messageResID = R.string.correct_toast;
+            } else {
+                messageResID = R.string.incorrect_toast;
+            }
         }
+
+        Toast.makeText(QuizActivity.this, messageResID, Toast.LENGTH_SHORT).show();
     }
 }
