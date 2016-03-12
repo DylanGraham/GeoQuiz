@@ -12,12 +12,20 @@ public class CheatActivity extends AppCompatActivity {
 
     private static final String EXTRA_ANSWER_IS_TRUE = "org.dylangraham.geoquiz.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "org.dylangraham.geoquiz.answer_shown";
+    private static final String KEY_CHEATED = "cheated";
     private TextView answerTextView;
     private Button showAnswer;
+    private boolean answerShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean(KEY_CHEATED)) {
+                setAnswerShownResult(true);
+            }
+        }
+
         setContentView(R.layout.activity_cheat);
 
         final boolean answerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
@@ -38,7 +46,14 @@ public class CheatActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_CHEATED, answerShown);
+    }
+
     private void setAnswerShownResult(boolean isAnswerShown) {
+        answerShown = true;
         Intent data = new Intent();
         data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
         setResult(RESULT_OK, data);
