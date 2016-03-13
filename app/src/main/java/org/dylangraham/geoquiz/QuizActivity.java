@@ -103,9 +103,7 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         if (requestCode == REQUEST_CODE_CHEAT) {
-            if (data == null) {
-                return;
-            }
+            if (data == null) return;
             isCheater = CheatActivity.wasAnswerShown(data);
         }
     }
