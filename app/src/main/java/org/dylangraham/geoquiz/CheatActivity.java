@@ -18,6 +18,7 @@ public class CheatActivity extends AppCompatActivity {
     private static final String EXTRA_ANSWER_SHOWN = "org.dylangraham.geoquiz.answer_shown";
     private static final String KEY_CHEATED = "cheated";
     private TextView answerTextView;
+    private TextView apiLevelTextView;
     private Button showAnswer;
     private boolean answerShown;
 
@@ -35,7 +36,10 @@ public class CheatActivity extends AppCompatActivity {
         final boolean answerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
         answerTextView = (TextView) findViewById(R.id.answer_text_view);
+        apiLevelTextView = (TextView) findViewById(R.id.api_level);
         showAnswer = (Button) findViewById(R.id.show_answer_button);
+
+        apiLevelTextView.setText("API level " + Build.VERSION.SDK_INT);
 
         showAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
