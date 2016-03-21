@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = QuizActivity.class.getCanonicalName();
@@ -15,7 +19,19 @@ public class QuizActivity extends AppCompatActivity {
     private static final String KEY_CHEATED = "cheated";
     private static final int REQUEST_CODE_CHEAT = 0;
 
-    private TextView questionTextView;
+    @Bind(R.id.question_text_view)
+    TextView questionTextView;
+    @Bind(R.id.next_button)
+    Button nextButton;
+    @Bind(R.id.cheat_button)
+    Button cheatButton;
+    @Bind(R.id.prev_button)
+    Button prevButton;
+    @Bind(R.id.true_button)
+    Button trueButton;
+    @Bind(R.id.false_button)
+    Button falseButton;
+
     private int currentIndex = 0;
     private boolean isCheater;
 
@@ -31,68 +47,50 @@ public class QuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+        ButterKnife.bind(this);
 
         if (savedInstanceState != null) {
             currentIndex = savedInstanceState.getInt(KEY_INDEX);
             isCheater = savedInstanceState.getBoolean(KEY_CHEATED);
         }
 
-        questionTextView = (TextView) findViewById(R.id.question_text_view);
-        Button nextButton = (Button) findViewById(R.id.next_button);
-        Button cheatButton = (Button) findViewById(R.id.cheat_button);
-        Button prevButton = (Button) findViewById(R.id.prev_button);
-        Button trueButton = (Button) findViewById(R.id.true_button);
-        Button falseButton = (Button) findViewById(R.id.false_button);
-
         nextQuestion();
-
-        questionTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentIndex = (currentIndex + 1) % questionBank.length;
-                nextQuestion();
-            }
-        });
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentIndex = (currentIndex + 1) % questionBank.length;
-                isCheater = false;
-                nextQuestion();
-            }
-        });
-
-        cheatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean answerIsTrue = questionBank[currentIndex].isAnswerTrue();
-                Intent i = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
-                startActivityForResult(i, REQUEST_CODE_CHEAT);
-            }
-        });
-
-        prevButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentIndex = (currentIndex - 1 + questionBank.length) % questionBank.length;
-                nextQuestion();
-            }
-        });
 
         trueButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                checkAnswer(true);
-            }
+            public void onClick(View v) { checkAnswer(true); }
         });
 
         falseButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                checkAnswer(false);
-            }
+            public void onClick(View v) { checkAnswer(false); }
         });
+    }
+
+    @OnClick(R.id.question_text_view)
+    public void clickQuestion() {
+        currentIndex = (currentIndex + 1) % questionBank.length;
+        nextQuestion();
+    }
+
+    @OnClick(R.id.next_button)
+    public void clickNext() {
+        currentIndex = (currentIndex + 1) % questionBank.length;
+        isCheater = false;
+        nextQuestion();
+    }
+
+    @OnClick(R.id.cheat_button)
+    public void clickCheat() {
+        boolean answerIsTrue = questionBank[currentIndex].isAnswerTrue();
+        Intent i = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
+        startActivityForResult(i, REQUEST_CODE_CHEAT);
+    }
+
+    @OnClick(R.id.prev_button)
+    public void clickPrev() {
+        currentIndex = (currentIndex - 1 + questionBank.length) % questionBank.length;
+        nextQuestion();
     }
 
     @Override
